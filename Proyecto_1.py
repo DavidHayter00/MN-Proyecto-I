@@ -230,6 +230,7 @@ class Root_Methods:
         top.mainloop()
         
     def my_bisec(self, int_a, int_b):
+        i = 0
         f = lambda a,b,c,x: a*x**2 + b*x + c
         self.a = float(self.a)
         self.b = float(self.b)
@@ -238,16 +239,19 @@ class Root_Methods:
         int_b = float(int_b)
 
         if np.sign(f(self.a, self.b, self.c, int_a)) == np.sign(f(self.a, self.b, self.c, int_b)):
-            raise Exception("The scalars a and b do not bound a root")
+            raise Exception("No hay una raiz dentro del intervalo %")
 
         m = (int_a + int_b)/2
+        print("Iteracion-%d, a = %0.6f, b = %0.6f, f(a) = %0.6f, f(a)*f(m) = %0.6f"  % (i, int_a, int_b, f(self.a, self.b, self.c, int_a), (f(self.a, self.b, self.c, int_a)*f(self.a, self.b, self.c, int_b))))
     
         if np.abs(f(self.a, self.b, self.c, m)) < 0.0001:
-            print(m)
+            print("\nLa raiz es: %0.8f" % m)
             return m
         elif np.sign(f(self.a, self.b, self.c, int_a)) == np.sign(f(self.a, self.b, self.c, m)):
+            i += 1
             return roots.my_bisec(m, int_b)
         elif np.sign(f(self.a, self.b, self.c, int_b)) == np.sign(f(self.a, self.b, self.c, m)):
+            i += 1
             return roots.my_bisec(int_a, m)
 
     def secant():
@@ -283,16 +287,16 @@ class Root_Methods:
 
         while cond:
             if f(self.a, self.b, self.c, x0) == f(self.a, self.b, self.c, x1):
-                raise Exception("The scalars a and b do not bound a root")
+                raise Exception("No hay una raiz dentro de la funcion f(x0) y f(x1)")
         
             x = x0 - (x1-x0)*f(self.a, self.b, self.c, x0)/( f(self.a, self.b, self.c, x1) - f(self.a, self.b, self.c, x0) ) 
-            print('Iteration-%d, x2 = %0.6f and f(x) = %0.6f' % (i, x, f(self.a, self.b, self.c, x)))
+            print("Iteracion-%d, x = %0.6f, f(x) = %0.6f" % (i, x, f(self.a, self.b, self.c, x)))
             x0 = x1
             x1 = x
             i += 1
 
             cond = abs(f(self.a, self.b, self.c, x)) > 0.0001
-        print('\n Required root is: %0.8f' % x)
+        print("\n La raiz es: %0.8f" % x)
 
 root = Tk()
 root.title("Proyecto 1")
@@ -307,3 +311,35 @@ roots = Root_Methods(0,0,0)
 intro()
 
 root.mainloop()
+
+if sign(fa) != sign(fb):
+    err_tol= 0.0001
+    err_rel = 100.0
+    xsol = (numa+numb)/2.0
+    fsol = coef(aelevado, bxx, cc, xsol)
+    niter = 0
+
+    print("\n\niteracion\t a\t    b\t          f(a)\t         xsol\t       error_relativo")
+    print("%d\t      %0.4f\t %0.4f\t          %0.4f\t %0.4f\t  %0.4f"%(niter, numa, numb, fa, xsol, err_rel) )
+
+    while(err_rel>err_tol):
+        fsol = coef(aelevado, bxx, cc, xsol)
+
+        if sign(fa) != sign(fsol):
+            numb = xsol
+        else: 
+            numa = xsol
+            fa = fsol
+
+        xant = xsol
+        xsol = (numa+numb)/2.0
+        niter = niter +1
+
+        err_rel = abs((xsol - xant)/xsol )*100
+        print("%d\t      %0.4f\t %0.4f\t  %0.4f\t %0.4f\t   %0.4f"%(niter, numa, numb, fa, xsol, err_rel) )
+
+        print("\nfin")
+else:
+   print("el intervalo no contiene una raiz")
+   exit()
+
