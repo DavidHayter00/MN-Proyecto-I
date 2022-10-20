@@ -224,7 +224,7 @@ class Root_Methods:
         inte_b.grid()
         inte_b.insert(0, "b")
 
-        button_r = Button(top, text= "Insertar", command= lambda: roots.my_bisec(inte_a.get(), inte_b.get()))
+        button_r = Button(top, text= "Insertar", command= lambda: [roots.my_bisec(inte_a.get(), inte_b.get()), top.destroy()])
         button_r.grid()
 
         top.mainloop()
@@ -254,7 +254,7 @@ class Root_Methods:
             i += 1
             return roots.my_bisec(int_a, m)
 
-    def secant():
+    def secant(self):
         top = Toplevel()
         top.title("Insertar Datos")
 
@@ -265,18 +265,14 @@ class Root_Methods:
         x1 = Entry(top, width= 5)
         x1.grid()
         x1.insert(0, "x1")
-        
-        n = Entry(top, width= 5)
-        n.grid()
-        n.insert(0, "Numero de intentos")
 
-        button_r = Button(top, text= "Insertar", command= lambda: roots.my_secan(x0.get(), x1.get(), n.get()))
+        button_r = Button(top, text= "Insertar", command= lambda: [roots.my_secan(x0.get(), x1.get()), top.destroy()])
         button_r.grid()
 
         top.mainloop()
         pass
     
-    def my_secan(self, x0, x1, n):
+    def my_secan(self, x0, x1):
         x = 0; i =0; cond = True
         f = lambda a,b,c,x: a*x**2 + b*x + c
         self.a = float(self.a)
@@ -312,34 +308,4 @@ intro()
 
 root.mainloop()
 
-if sign(fa) != sign(fb):
-    err_tol= 0.0001
-    err_rel = 100.0
-    xsol = (numa+numb)/2.0
-    fsol = coef(aelevado, bxx, cc, xsol)
-    niter = 0
-
-    print("\n\niteracion\t a\t    b\t          f(a)\t         xsol\t       error_relativo")
-    print("%d\t      %0.4f\t %0.4f\t          %0.4f\t %0.4f\t  %0.4f"%(niter, numa, numb, fa, xsol, err_rel) )
-
-    while(err_rel>err_tol):
-        fsol = coef(aelevado, bxx, cc, xsol)
-
-        if sign(fa) != sign(fsol):
-            numb = xsol
-        else: 
-            numa = xsol
-            fa = fsol
-
-        xant = xsol
-        xsol = (numa+numb)/2.0
-        niter = niter +1
-
-        err_rel = abs((xsol - xant)/xsol )*100
-        print("%d\t      %0.4f\t %0.4f\t  %0.4f\t %0.4f\t   %0.4f"%(niter, numa, numb, fa, xsol, err_rel) )
-
-        print("\nfin")
-else:
-   print("el intervalo no contiene una raiz")
-   exit()
 
