@@ -307,3 +307,60 @@ roots = Root_Methods(0,0,0)
 intro()
 
 root.mainloop()
+
+def coef(aelevado, bxx,c, x):
+   coefun = (aelevado*(x)**2) - (bxx*x) - c
+   return coefun
+
+from ast import If
+from re import T
+from numpy import sign
+
+print("ingrese los coeficientes de la funcion")
+aelevado = int(input("ingrese el coeficiente elevado al cuadrado: "))
+bxx = int(input("ingrese el segundo coeficiente: "))
+cc = int(input("ingrese el tercer coeficiente: "))
+
+print("\n\ningrese los intervalo con el cual se vaya a evaluar la funcion")
+numa = int(input("ingrese el primer intervalo: "))
+numb = int(input("ingrese el segundo intervalo: "))
+
+
+coeficientesf=coef(aelevado, bxx, cc, numa)
+
+fa=coef(aelevado, bxx, cc, numa)
+fb=coef(aelevado, bxx, cc, numb)
+
+if sign(fa) != sign(fb):
+   print("el intervalo si contiene una raiz")
+else:
+   print("el intervalo no contiene una raiz")
+   exit()
+
+err_tol= 0.0001
+err_rel = 100.0
+
+xsol = (numa+numb)/2.0
+fsol = coef(aelevado, bxx, cc, xsol)
+niter = 0
+
+print("\n\niteracion\t a\t    b\t          f(a)\t         xsol\t       error_relativo")
+print("%d\t      %0.4f\t %0.4f\t          %0.4f\t %0.4f\t  %0.4f"%(niter, numa, numb, fa, xsol, err_rel) )
+
+while(err_rel>err_tol):
+   fsol = coef(aelevado, bxx, cc, xsol)
+
+   if sign(fa) != sign(fsol):
+      numb = xsol
+   else: 
+      numa = xsol
+      fa = fsol
+
+   xant = xsol
+   xsol = (numa+numb)/2.0
+   niter = niter +1
+
+   err_rel = abs((xsol - xant)/xsol )*100
+   print("%d\t      %0.4f\t %0.4f\t  %0.4f\t %0.4f\t   %0.4f"%(niter, numa, numb, fa, xsol, err_rel) )
+
+print("\nfin")
