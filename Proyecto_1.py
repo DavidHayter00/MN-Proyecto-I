@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter.font import Font
 from tkinter import messagebox
+import numpy as np
 
 def clear_frame():
     for widgets in root.winfo_children():
@@ -20,7 +21,7 @@ def create_menu():
     my_menu.add_cascade(label = "Metodos para Calcular Raices", menu= roots_menu)
     roots_menu.add_command(label = "Insertar Funcion Polinomica", command= roots.insert_function)
     roots_menu.add_command(label = "Metodo Cerrado Biseccion", command= roots.bisec)
-    roots_menu.add_command(label = "Metodo Abierto de la Secante", command= roots.secante)
+    roots_menu.add_command(label = "Metodo Abierto de la Secante", command= roots.secant)
     my_menu.add_command(label= "Salir", command= root.destroy)
 
 def intro():
@@ -177,7 +178,7 @@ class Doolittle:
         clear_frame()
         create_menu()
 
-        print(y,x)
+        print(y, x)
 
 class Root_Methods:
     def __init__(self, a, b ,c):
@@ -213,7 +214,7 @@ class Root_Methods:
 
     def bisec(self):
         top = Toplevel()
-        top.title("Insertar Intervalos")
+        top.title("Insertar Datos")
 
         inte_a = Entry(top, width= 5)
         inte_a.grid()
@@ -223,17 +224,75 @@ class Root_Methods:
         inte_b.grid()
         inte_b.insert(0, "b")
 
-        button_r = Button(top, text= "Insertar", command= lambda: roots.resul_bisec(inte_a.get(), inte_b.get()))
+        button_r = Button(top, text= "Insertar", command= lambda: roots.my_bisec(inte_a.get(), inte_b.get()))
         button_r.grid()
 
         top.mainloop()
-    
-    def resul_bisec(self, int_a, int_b):
-        print(self.a*(int_a ** 2) + self.b*(int_a) + self.c) * (self.a*(int_b ** 2) + self.b*(int_b) + self.c)
-        #if ((self.a(int_a)**2 + self.b(int_a) + self.c) * (self.a(int_b)**2 + self.b(int_b) + self.c)) < 0:
         
-    def secante():
+    def my_bisec(self, int_a, int_b):
+        f = lambda a,b,c,x: a*x**2 + b*x + c
+        self.a = float(self.a)
+        self.b = float(self.b)
+        self.c = float(self.c)
+        int_a = float(int_a)
+        int_b = float(int_b)
+
+        if np.sign(f(self.a, self.b, self.c, int_a)) == np.sign(f(self.a, self.b, self.c, int_b)):
+            raise Exception("The scalars a and b do not bound a root")
+
+        m = (int_a + int_b)/2
+    
+        if np.abs(f(self.a, self.b, self.c, m)) < 0.0001:
+            print(m)
+            return m
+        elif np.sign(f(self.a, self.b, self.c, int_a)) == np.sign(f(self.a, self.b, self.c, m)):
+            return roots.my_bisec(m, int_b)
+        elif np.sign(f(self.a, self.b, self.c, int_b)) == np.sign(f(self.a, self.b, self.c, m)):
+            return roots.my_bisec(int_a, m)
+
+    def secant():
+        top = Toplevel()
+        top.title("Insertar Datos")
+
+        x0 = Entry(top, width= 5)
+        x0.grid()
+        x0.insert(0, "x0")
+        
+        x1 = Entry(top, width= 5)
+        x1.grid()
+        x1.insert(0, "x1")
+        
+        n = Entry(top, width= 5)
+        n.grid()
+        n.insert(0, "Numero de intentos")
+
+        button_r = Button(top, text= "Insertar", command= lambda: roots.my_secan(x0.get(), x1.get(), n.get()))
+        button_r.grid()
+
+        top.mainloop()
         pass
+    
+    def my_secan(self, x0, x1, n):
+        x = 0; i =0; cond = True
+        f = lambda a,b,c,x: a*x**2 + b*x + c
+        self.a = float(self.a)
+        self.b = float(self.b)
+        self.c = float(self.c)
+        x0 = float(x0)
+        x1 = float(x1)
+
+        while cond:
+            if f(self.a, self.b, self.c, x0) == f(self.a, self.b, self.c, x1):
+                raise Exception("The scalars a and b do not bound a root")
+        
+            x = x0 - (x1-x0)*f(self.a, self.b, self.c, x0)/( f(self.a, self.b, self.c, x1) - f(self.a, self.b, self.c, x0) ) 
+            print('Iteration-%d, x2 = %0.6f and f(x) = %0.6f' % (i, x, f(self.a, self.b, self.c, x)))
+            x0 = x1
+            x1 = x
+            i += 1
+
+            cond = abs(f(self.a, self.b, self.c, x)) > 0.0001
+        print('\n Required root is: %0.8f' % x)
 
 root = Tk()
 root.title("Proyecto 1")
@@ -248,4 +307,3 @@ roots = Root_Methods(0,0,0)
 intro()
 
 root.mainloop()
-
